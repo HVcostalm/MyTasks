@@ -1,0 +1,1 @@
+export { HistoricoScreen as default } from "./historicoscreen";

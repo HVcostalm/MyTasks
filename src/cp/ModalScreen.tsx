@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.5)'
   },
   modalContainer: {
-    backgroundColor: '#C0C0C0', // cinza claro
+    backgroundColor: '#464646', // cinza claro
     borderRadius: 20,
     borderWidth: 2,
     padding: 16,

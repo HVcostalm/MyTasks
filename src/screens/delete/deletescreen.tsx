@@ -1,70 +1,85 @@
 import ModalScreen from "@/src/cp/ModalScreen";
 import { ThemedView } from "@/src/cp/ThemedView";
 import { useEffect, useState } from "react";
-import { StyleSheet, TextInput, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { TTarefaAttr } from "@/src/model/tarefa";
 import { Button } from "@/src/cp/Button";
 import { useContextTarefa, TarefaActionTypes } from "@/src/state/tarefa";
-import { DZSQLiteDelete, } from "@/src/db/drizzlesqlite";
+import { DZSQLiteDelete, DZSQLiteDeleteAll } from "@/src/db/drizzlesqlite";
 import { ThemedText } from "@/src/cp/ThemedText";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 type DeleteProps = {
   visible: boolean,
   handleClose: () => void,
   tarefa: TTarefaAttr | null,
+  mensagem?: string
 }
 
-export function DeleteScreen({ visible, handleClose, tarefa }: DeleteProps) {
+export function DeleteScreen({ visible, handleClose, tarefa, mensagem }: DeleteProps) {
   const { dispatch } = useContextTarefa();
-
   const [deletingTarefa, setDeletingTarefa] = useState<TTarefaAttr | null>(tarefa);
 
   useEffect(() => {
     setDeletingTarefa(tarefa);
-  }, [tarefa]); // Atualiza o estado quando o tarefa muda
+  }, [tarefa]);
 
   const handleDelete = () => {
-    if (!deletingTarefa) return;
-
-    dispatch({ type: TarefaActionTypes.DELETE_TAREFA, payload: deletingTarefa });
-    DZSQLiteDelete(deletingTarefa.idTarefa); // Deleta do banco de dados
+    if (deletingTarefa) {
+      dispatch({ type: TarefaActionTypes.DELETE_TAREFA, payload: deletingTarefa });
+      DZSQLiteDelete(deletingTarefa.idTarefa);
+    } else {
+      dispatch({ type: TarefaActionTypes.DELETE_TAREFA, payload: [] });
+      DZSQLiteDeleteAll();
+    }
     handleClose();
   };
 
   return (
-    <ModalScreen isVisible={visible} onClose={handleClose} title="Confirmação de Deleção">
-      <ThemedView style={styles.container}>
-        <ThemedText type="defaultCenter">{deletingTarefa ? `Tem certeza que deseja deletar a tarefa ${deletingTarefa.titulo}?` : "Nenhum tarefa selecionado."}</ThemedText>
-        <ThemedView style={styles.container}>
-          <Button label="Sim" theme="primary"  onPress={handleDelete}/>
-        </ThemedView>
-        <ThemedView style={styles.container}>
+    <ModalScreen isVisible={visible} onClose={handleClose} title="">
+      <ThemedView style={styles.modalContent}>
+        <FontAwesome name="warning" size={48} color="red" style={styles.warningIcon} />
+
+        <ThemedText type="defaultCenter" style={styles.message}>
+          {mensagem
+            ? mensagem
+            : deletingTarefa
+              ? `Tem certeza que deseja apagar a tarefa ${deletingTarefa.titulo}?`
+              : "Nenhuma tarefa selecionada."}
+        </ThemedText>
+
+        <View style={styles.buttonRow}>
+          <Button label="Sim" theme="primary" onPress={handleDelete} />
           <Button label="Não" theme="primary" onPress={handleClose} />
-        </ThemedView>
+        </View>
       </ThemedView>
     </ModalScreen>
   );
 }
 
+
 const styles = StyleSheet.create({
-  container: {
-    justifyContent: "center",
-    alignItems: 'flex-start',
-    padding: 10,
-    gap: 8,
+  modalContent: {
+    padding: 20,
+    borderRadius: 12,
+    backgroundColor: '#ccc',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 16,
+    height: 300,
   },
-  footer: {
-    alignSelf: 'center',
+  warningIcon: {
+    marginBottom: 8,
   },
-  input: {
-    backgroundColor: "white",
-    borderBottomWidth: 1,
-    marginBottom: 6,
-    padding: 6,
-    width: "100%",
+  message: {
+    fontSize: 20,
+    textAlign: 'center',
+    color: '#222',
   },
-  id: {
-    color: "grey",
-    margin: 10,
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 12,
+    height: 100,
   },
 });

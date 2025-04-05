@@ -7,17 +7,19 @@ export interface TTarefaAttr {
     status:Status,
 }
 
-const emptyProduto:TTarefaAttr = {idTarefa:0,titulo:"",descricao:"",status: Status.Pendente}
-
 export class Tarefa implements TTarefaAttr {
     
-    private _data: TTarefaAttr = emptyProduto;
+    private _data: TTarefaAttr;
 
-    constructor(status:Status=Status.Pendente,titulo?:string,descricao?:string){
-        this._data.titulo = titulo?titulo:""
-        this._data.descricao = descricao?descricao:""
-        this._data.status = status
+    constructor(status: Status = Status.Pendente, titulo?: string, descricao?: string) {
+        this._data = {
+            idTarefa: 0,
+            titulo: titulo ?? "",
+            descricao: descricao ?? "",
+            status: status
+        };
     }
+
 
     get idTarefa() {return this._data.idTarefa}
     set idTarefa(id:number) {this._data.idTarefa = id}

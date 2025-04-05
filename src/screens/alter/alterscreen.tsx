@@ -48,52 +48,49 @@ export function AlterScreen({ visible, handleClose, tarefa }: AlterProps) {
   }
 
   return (
-    <ModalScreen isVisible={visible} onClose={handleClose} title="Alteração do Produto">
-      <ThemedView style={styles.container}>
-        <View style={styles.input}>
-          <TextInput 
+      <ModalScreen isVisible={visible} onClose={handleClose} title="">
+        <View style={styles.container}>
+          <TextInput
             value={editedTitulo}
             placeholder="Título"
-            autoCorrect={false}
-            onChangeText={(text) => setEditedTitulo(text)} 
+            onChangeText={setEditedTitulo}
+            style={styles.input}
           />
-        </View>
-
-        <View style={styles.input}>
-          <TextInput 
+          <TextInput
             value={editedDescricao}
             placeholder="Descrição (Opcional)"
-            autoCorrect={false}
-            onChangeText={(text) => setEditedDescricao(text)} 
+            onChangeText={setEditedDescricao}
+            multiline
+            style={[styles.input, styles.descricaoInput]}
           />
+          <View style={styles.footer}>
+            <Button label="Criar" theme="primary" onPress={handleClick} />
+          </View>
         </View>
-        <ThemedView style={styles.footer}>
-          <Button label="Alterar" iconame="save" theme="primary" onPress={handleClick} />
-        </ThemedView>
-      </ThemedView>
-    </ModalScreen>
-  );
+      </ModalScreen>
+    );
 }
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: "center",
-    alignItems: 'flex-start',
-    padding: 10,
-    gap: 8,
-  },
-  footer: {
+    width: 260,
     alignSelf: 'center',
+    paddingTop: 10,
   },
   input: {
-    backgroundColor: "white",
-    borderBottomWidth: 1,
-    marginBottom: 6,
-    padding: 6,
-    width: "100%",
+    alignSelf: 'center',
+    backgroundColor: '#f0f0f0',
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    marginBottom: 12,
+    width: 310,
   },
-  id: {
-    color: "grey",
-    margin: 10,
+  descricaoInput: {
+    height: 175,
+    textAlignVertical: 'top',
+  },
+  footer: {
+    alignItems: 'center',
   },
 });

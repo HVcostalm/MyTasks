@@ -1,7 +1,7 @@
 import ModalScreen from "@/src/cp/ModalScreen";
 import { useEffect, useState } from "react";
 import { StyleSheet, TextInput, View, } from 'react-native';
-import { Tarefa } from "@/src/model/tarefa";
+import { Tarefa, TTarefaAttr } from "@/src/model/tarefa";
 import { Button } from "@/src/cp/Button";
 import { useContextTarefa, TarefaActionTypes } from "@/src/state/tarefa";
 import { DZSQLiteInsert } from "@/src/db/drizzlesqlite";
@@ -19,12 +19,26 @@ export function RegisterScreen({ visible, handleClose }: RegisterProps) {
   const [titulo, setTitulo] = useState("")
   const [descricao, setDescricao] = useState("")
 
-  const handleClick = () => {
+  const handleClick = async () => {
     const newTarefa = new Tarefa(Status.Pendente, titulo, descricao);
-    DZSQLiteInsert(tarefasTable, newTarefa.data)
+  
+    // 👇 Pegamos só os campos necessários, excluindo o idTarefa
+    const { titulo: t, descricao: d, status: s } = newTarefa.data;
+  
+    const idGerado = await DZSQLiteInsert(tarefasTable, {
+      titulo: t,
+      descricao: d,
+      status: s,
+    });
+  
+    newTarefa.idTarefa = idGerado;
+  
     dispatch({ type: TarefaActionTypes.ADD_TAREFA, payload: newTarefa.datacpy });
-    handleClose()
-  }
+  
+    handleClose();
+  };
+  
+  
 
   useEffect(() => {
     if (visible) {
@@ -34,7 +48,7 @@ export function RegisterScreen({ visible, handleClose }: RegisterProps) {
   }, [visible]);
 
   return (
-    <ModalScreen isVisible={visible} onClose={handleClose} title="">
+    <ModalScreen isVisible={visible} onClose={handleClose}>
       <View style={styles.container}>
         <TextInput
           value={titulo}

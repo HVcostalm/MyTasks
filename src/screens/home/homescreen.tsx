@@ -1,4 +1,3 @@
-import { Button } from "@/src/cp/Button";
 import { ThemedView } from "@/src/cp/ThemedView";
 import { Pressable, StyleSheet } from 'react-native';
 import { useState } from "react";

@@ -4,11 +4,8 @@ import { DZSQLiteSelect } from '@/src/db/drizzlesqlite';
 import { tarefasTable } from '@/src/db/schema';
 import { TTarefaAttr } from '@/src/model/tarefa';
 import { useContextTarefa, TarefaActionTypes } from '@/src/state/tarefa';
-import { useEffect, useState } from 'react';
-import { FlatList, View, StyleSheet, Pressable } from 'react-native';
-import AlterScreen from '../alter';
-import DeleteScreen from '../delete';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useEffect } from 'react';
+import { FlatList, View, StyleSheet } from 'react-native';
 import { eq } from 'drizzle-orm';
 import { Status } from '@/src/model/status';
 
@@ -16,46 +13,17 @@ type TarefaListProps = {
     tarefa: TTarefaAttr
 }
 
-export function TarefaListScreen() {
+export function HistoricoScreen() {
     const { state, dispatch } = useContextTarefa();
-    const [isAlterModalVisible, setIsAlterModalVisible] = useState<boolean>(false);
-    const [isDeleteModalVisible, setIsDeleteModalVisible] = useState<boolean>(false);
-    const [editingTarefa, setEditingTarefa] = useState<TTarefaAttr | null>(null);
-    const [deletingTarefa, setDeletingTarefa] = useState<TTarefaAttr | null>(null);
-
-    const onAlterModalClose = () => {
-        setIsAlterModalVisible(false);
-    };
-
-    const onDeleteModalClose = () => {
-        setIsDeleteModalVisible(false);
-    };
-
-
     
     const handleEmpty = () => {
         return (
             <View style={styles.emptyContainer}>
                 <ThemedText type="defaultSemiBold" style={styles.emptyText}>
-                    Sem Tarefas Pendentes
+                    Sem Tarefas Concluidas
                 </ThemedText>
             </View>
         );
-    };
-
-    const handleDelete = (tarefa: TTarefaAttr) => {
-        setDeletingTarefa(tarefa); // Passa o produto para o estado
-        setIsDeleteModalVisible(true);
-    };
-
-    const handleEdit = (tarefa: TTarefaAttr) => {
-        setEditingTarefa(tarefa); // Passa o produto para o estado
-        setIsAlterModalVisible(true);
-    };
-
-    const handleConcluir = (tarefa: TTarefaAttr) => {
-        setEditingTarefa(tarefa); // Passa o produto para o estado
-        setIsAlterModalVisible(true);
     };
 
     const ItemRenderer = ({ tarefa }: TarefaListProps) => {
@@ -70,17 +38,6 @@ export function TarefaListScreen() {
                         {tarefa.descricao}
                     </ThemedText>
                 </View>
-                <View style={styles.cardActions}>
-                    <Pressable onPress={() => handleConcluir(tarefa)}>
-                        <FontAwesome name="check-square-o" size={26} color="#666" style={styles.icon} />
-                    </Pressable>
-                    <Pressable onPress={() => handleEdit(tarefa)}>
-                        <FontAwesome name="pencil" size={26} color="#666" style={styles.icon} />
-                    </Pressable>
-                    <Pressable onPress={() => handleDelete(tarefa)}>
-                        <FontAwesome name="trash" size={26} color="#666" style={styles.icon} />
-                    </Pressable>
-                </View>
             </View>
         );
     };
@@ -90,7 +47,7 @@ export function TarefaListScreen() {
         const fetchData = async () => {
             const data = await DZSQLiteSelect<TTarefaAttr>(
                 tarefasTable,
-                eq(tarefasTable.status, Status.Pendente) // <-- sem array aqui
+                eq(tarefasTable.status, Status.Concluido) // <-- sem array aqui
             );
             dispatch({ type: TarefaActionTypes.ADD_TAREFA, payload: [...data] });
         };
@@ -98,15 +55,13 @@ export function TarefaListScreen() {
     }, []);
     
     return (
-        <ThemedView>
+        <ThemedView style={styles.container}>
             <FlatList
                 data={state.Tarefas}
                 renderItem={({ item }) => <ItemRenderer tarefa={item} />}
                 ListEmptyComponent={handleEmpty}
                 keyExtractor={item => item.idTarefa.toString()}
             />
-            <AlterScreen visible={isAlterModalVisible} handleClose={onAlterModalClose} tarefa={editingTarefa}/>
-            <DeleteScreen visible={isDeleteModalVisible} handleClose={onDeleteModalClose} tarefa={deletingTarefa}/>
         </ThemedView>
     );
 }
@@ -136,27 +91,12 @@ const Divider: React.FC<DividerProps> = ({
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         justifyContent: "center",
-        alignItems: 'flex-start',
-        padding: 10,
-        gap: 8,
-    },
-    footer: {
-        alignSelf: 'center',
-    },
-    input: {
-        backgroundColor: "white",
-        borderBottomWidth: 1,
-        marginBottom: 6,
-        padding: 6,
-        width: "100%",
-    },
-    id: {
-        color: "grey",
-        margin: 10,
-    },
+        alignItems: "center",
+      },
     emptyContainer: {
-        backgroundColor: '#f0f0f0', // cinza claro
+        backgroundColor: '#f0f0f0', 
         borderRadius: 12,
         paddingHorizontal: 20,
         paddingVertical: 20,
@@ -169,7 +109,7 @@ const styles = StyleSheet.create({
     },
     card: {
         flexDirection: 'row',
-        backgroundColor: '#e0e0e0',
+        backgroundColor: '#0f0',
         borderColor: '#aaa',
         borderWidth: 1,
         borderRadius: 8,
@@ -197,15 +137,4 @@ const styles = StyleSheet.create({
         color: '#666',
         marginTop: 4,
     },
-    
-    cardActions: {
-        marginLeft: 12,
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        gap: 12,
-    },
-    
-    icon: {
-        padding: 0,
-    },        
 });

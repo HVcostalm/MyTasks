@@ -1,16 +1,7 @@
-import { ThemedText } from "@/src/cp/ThemedText";
-import { ThemedView } from "@/src/cp/ThemedView";
+import HistoricoScreen from "@/src/screens/historico";
 
-export default function Settings() {
+export default function Historico() {
   return (
-    <ThemedView
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <ThemedText type='title'>Historico</ThemedText>
-    </ThemedView>
+    <HistoricoScreen />
   );
 }

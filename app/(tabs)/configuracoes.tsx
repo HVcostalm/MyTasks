@@ -1,16 +1,7 @@
-import { ThemedText } from "@/src/cp/ThemedText";
-import { ThemedView } from "@/src/cp/ThemedView";
+import ConfiguracoesScreen from "@/src/screens/configuracoes";
 
-export default function Settings() {
+export default function Configuracoes() {
   return (
-    <ThemedView
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <ThemedText type='title'>Configurações</ThemedText>
-    </ThemedView>
+    <ConfiguracoesScreen />
   );
 }
