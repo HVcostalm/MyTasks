@@ -1,0 +1,1 @@
+export { AlterScreen as default } from "./alterscreen";

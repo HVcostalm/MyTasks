@@ -1,0 +1,1 @@
+export { DeleteScreen as default } from "./deletescreen";
