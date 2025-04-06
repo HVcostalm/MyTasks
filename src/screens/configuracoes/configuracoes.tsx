@@ -16,7 +16,6 @@ export function ConfiguracoesScreen() {
     };
 
     const handleDelete = () => {
-        console.log("Botão pressionado - abrindo modal");
         setIsDeleteModalVisible(true);
     };
 

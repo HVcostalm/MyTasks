@@ -22,6 +22,12 @@ export function reducer(state: TStateTarefa, action: TTarefaActions):TStateTaref
                         : tarefa.idTarefa !== action.payload.idTarefa
                 ),
             };
+        
+        case TarefaActionTypes.DELETE_ALL_TAREFAS:
+            return {
+                ...state,
+                Tarefas: []
+            }
 
         case TarefaActionTypes.ALTER_TAREFA:
             return {

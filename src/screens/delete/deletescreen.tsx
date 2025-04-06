@@ -1,13 +1,14 @@
 import ModalScreen from "@/src/cp/ModalScreen";
 import { ThemedView } from "@/src/cp/ThemedView";
 import { useEffect, useState } from "react";
-import { StyleSheet, View } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 import { TTarefaAttr } from "@/src/model/tarefa";
 import { Button } from "@/src/cp/Button";
 import { useContextTarefa, TarefaActionTypes } from "@/src/state/tarefa";
 import { DZSQLiteDelete, DZSQLiteDeleteAll } from "@/src/db/drizzlesqlite";
 import { ThemedText } from "@/src/cp/ThemedText";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { useNavigation } from "@react-navigation/native";
 
 type DeleteProps = {
   visible: boolean,
@@ -18,22 +19,27 @@ type DeleteProps = {
 
 export function DeleteScreen({ visible, handleClose, tarefa, mensagem }: DeleteProps) {
   const { dispatch } = useContextTarefa();
+  const navigation = useNavigation();
   const [deletingTarefa, setDeletingTarefa] = useState<TTarefaAttr | null>(tarefa);
 
   useEffect(() => {
     setDeletingTarefa(tarefa);
   }, [tarefa]);
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (deletingTarefa) {
       dispatch({ type: TarefaActionTypes.DELETE_TAREFA, payload: deletingTarefa });
-      DZSQLiteDelete(deletingTarefa.idTarefa);
+      await DZSQLiteDelete(deletingTarefa.idTarefa);
+      Alert.alert("Sucesso", "Tarefa apagada!");
     } else {
-      dispatch({ type: TarefaActionTypes.DELETE_TAREFA, payload: [] });
-      DZSQLiteDeleteAll();
+      await DZSQLiteDeleteAll();
+      Alert.alert("Sucesso", "Todas as tarefas foram apagadas!");
+      dispatch({ type: TarefaActionTypes.DELETE_ALL_TAREFAS });
     }
     handleClose();
+    //navigation.navigate("(home)");
   };
+  
 
   return (
     <ModalScreen isVisible={visible} onClose={handleClose} title="">

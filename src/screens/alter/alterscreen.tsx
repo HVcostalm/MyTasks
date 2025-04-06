@@ -64,7 +64,7 @@ export function AlterScreen({ visible, handleClose, tarefa }: AlterProps) {
             style={[styles.input, styles.descricaoInput]}
           />
           <View style={styles.footer}>
-            <Button label="Criar" theme="primary" onPress={handleClick} />
+            <Button label="Salvar" theme="primary" onPress={handleClick} />
           </View>
         </View>
       </ModalScreen>

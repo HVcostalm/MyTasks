@@ -20,24 +20,24 @@ export function RegisterScreen({ visible, handleClose }: RegisterProps) {
   const [descricao, setDescricao] = useState("")
 
   const handleClick = async () => {
-    const newTarefa = new Tarefa(Status.Pendente, titulo, descricao);
-  
-    // 👇 Pegamos só os campos necessários, excluindo o idTarefa
-    const { titulo: t, descricao: d, status: s } = newTarefa.data;
-  
-    const idGerado = await DZSQLiteInsert(tarefasTable, {
-      titulo: t,
-      descricao: d,
-      status: s,
-    });
-  
-    newTarefa.idTarefa = idGerado;
-  
-    dispatch({ type: TarefaActionTypes.ADD_TAREFA, payload: newTarefa.datacpy });
-  
-    handleClose();
-  };
-  
+  const newTarefa = new Tarefa(Status.Pendente, titulo, descricao);
+
+  // 👇 Pegamos só os campos necessários, excluindo o idTarefa
+  const { titulo: t, descricao: d, status: s } = newTarefa.data;
+
+  const idGerado = await DZSQLiteInsert(tarefasTable, {
+    titulo: t,
+    descricao: d,
+    status: s,
+  });
+
+  newTarefa.idTarefa = idGerado;
+
+  dispatch({ type: TarefaActionTypes.ADD_TAREFA, payload: newTarefa.datacpy });
+
+  handleClose();
+};
+
   
 
   useEffect(() => {
