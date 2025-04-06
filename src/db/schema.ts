@@ -7,5 +7,5 @@ export const tarefasTable = sqliteTable(TABLENAME_TAREFA, {
     idTarefa: integer().primaryKey({ autoIncrement: true }),
     titulo:text().notNull(),
     descricao:text(),
-    status: integer()
+    status: integer().notNull(),
 });
