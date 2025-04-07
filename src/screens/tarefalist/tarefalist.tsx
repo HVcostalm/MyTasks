@@ -11,6 +11,7 @@ import DeleteScreen from '../delete';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { eq } from 'drizzle-orm';
 import { Status } from '@/src/model/status';
+import ConcludeScreen from '../concluir';
 
 type TarefaListProps = {
     tarefa: TTarefaAttr
@@ -20,8 +21,10 @@ export function TarefaListScreen() {
     const { state, dispatch } = useContextTarefa();
     const [isAlterModalVisible, setIsAlterModalVisible] = useState<boolean>(false);
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState<boolean>(false);
+    const [isConcludeModalVisible, setIsConcludeModalVisible] = useState<boolean>(false);
     const [editingTarefa, setEditingTarefa] = useState<TTarefaAttr | null>(null);
     const [deletingTarefa, setDeletingTarefa] = useState<TTarefaAttr | null>(null);
+    const [concludingTarefa, setConcludingTarefa] = useState<TTarefaAttr | null>(null);
 
     const onAlterModalClose = () => {
         setIsAlterModalVisible(false);
@@ -31,7 +34,9 @@ export function TarefaListScreen() {
         setIsDeleteModalVisible(false);
     };
 
-
+    const onConcludeModalClose = () => {
+        setIsConcludeModalVisible(false);
+    };
     
     const handleEmpty = () => {
         return (
@@ -53,9 +58,9 @@ export function TarefaListScreen() {
         setIsAlterModalVisible(true);
     };
 
-    const handleConcluir = (tarefa: TTarefaAttr) => {
-        setEditingTarefa(tarefa); // Passa o produto para o estado
-        setIsAlterModalVisible(true);
+    const handleConclude = (tarefa: TTarefaAttr) => {
+        setConcludingTarefa(tarefa); // Passa o produto para o estado
+        setIsConcludeModalVisible(true);
     };
 
     const ItemRenderer = ({ tarefa }: TarefaListProps) => {
@@ -71,7 +76,7 @@ export function TarefaListScreen() {
                     </ThemedText>
                 </View>
                 <View style={styles.cardActions}>
-                    <Pressable onPress={() => handleConcluir(tarefa)}>
+                    <Pressable onPress={() => handleConclude(tarefa)}>
                         <FontAwesome name="check-square-o" size={26} color="#666" style={styles.icon} />
                     </Pressable>
                     <Pressable onPress={() => handleEdit(tarefa)}>
@@ -107,6 +112,7 @@ export function TarefaListScreen() {
             />
             <AlterScreen visible={isAlterModalVisible} handleClose={onAlterModalClose} tarefa={editingTarefa}/>
             <DeleteScreen visible={isDeleteModalVisible} handleClose={onDeleteModalClose} tarefa={deletingTarefa}/>
+            <ConcludeScreen visible={isConcludeModalVisible} handleClose={onConcludeModalClose} tarefa={concludingTarefa}/>
         </ThemedView>
     );
 }
