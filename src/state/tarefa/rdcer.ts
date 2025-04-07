@@ -2,6 +2,7 @@ import { TarefaActionTypes, TStateTarefa, TTarefaActions } from "./types";
 
 export const initialState:TStateTarefa = {
     Tarefas: [],
+    TarefasConcluidas: [],
 }
 
 export function reducer(state: TStateTarefa, action: TTarefaActions):TStateTarefa {
@@ -12,6 +13,12 @@ export function reducer(state: TStateTarefa, action: TTarefaActions):TStateTaref
                 return {...state,Tarefas: [...action.payload] };
             }else{
                 return {...state,Tarefas: [...state.Tarefas,action.payload] };
+            }
+        case TarefaActionTypes.ADD_TAREFA_CONCLUIDA:
+            if (Array.isArray(action.payload)) {
+                return { ...state, TarefasConcluidas: [...action.payload] };
+            } else {
+                return { ...state, TarefasConcluidas: [...state.TarefasConcluidas, action.payload] };
             }
         case TarefaActionTypes.DELETE_TAREFA:
             return {

@@ -49,7 +49,7 @@ export function HistoricoScreen() {
                 tarefasTable,
                 eq(tarefasTable.status, Status.Concluido) // <-- sem array aqui
             );
-            dispatch({ type: TarefaActionTypes.ADD_TAREFA, payload: [...data] });
+            dispatch({ type: TarefaActionTypes.ADD_TAREFA_CONCLUIDA, payload: [...data] });
         };
         fetchData();
     }, []);
@@ -57,7 +57,7 @@ export function HistoricoScreen() {
     return (
         <ThemedView style={styles.container}>
             <FlatList
-                data={state.Tarefas}
+                data={state.TarefasConcluidas}
                 renderItem={({ item }) => <ItemRenderer tarefa={item} />}
                 ListEmptyComponent={handleEmpty}
                 keyExtractor={item => item.idTarefa.toString()}
