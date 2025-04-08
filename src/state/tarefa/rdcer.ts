@@ -33,7 +33,8 @@ export function reducer(state: TStateTarefa, action: TTarefaActions):TStateTaref
         case TarefaActionTypes.DELETE_ALL_TAREFAS:
             return {
                 ...state,
-                Tarefas: []
+                Tarefas: [],
+                TarefasConcluidas: []
             }
 
         case TarefaActionTypes.ALTER_TAREFA:
@@ -44,6 +45,30 @@ export function reducer(state: TStateTarefa, action: TTarefaActions):TStateTaref
                         ? action.payload.find(t => t.idTarefa === tarefa.idTarefa) || tarefa
                         : tarefa.idTarefa === action.payload.idTarefa ? action.payload : tarefa
                 ),
+            };
+        
+        case TarefaActionTypes.CONCLUDE_TAREFA:
+            const payloadArray = Array.isArray(action.payload) ? action.payload : [action.payload];
+
+            const novasConcluidas = payloadArray.filter(t => t.status === 2);
+            const novasPendentes = payloadArray.filter(t => t.status !== 2);
+
+            const tarefasAtualizadas = state.Tarefas.map(tarefa => {
+                const modificada = payloadArray.find(t => t.idTarefa === tarefa.idTarefa);
+                return modificada ? modificada : tarefa;
+            }).filter(t => t.status !== 2);
+
+            const concluidasAtualizadas = [
+                ...state.TarefasConcluidas.filter(
+                    t => !novasConcluidas.some(nt => nt.idTarefa === t.idTarefa)
+                ),
+                ...novasConcluidas
+            ];
+
+            return {
+                ...state,
+                Tarefas: [...tarefasAtualizadas, ...novasPendentes],
+                TarefasConcluidas: concluidasAtualizadas,
             };
 
         default:

@@ -22,15 +22,11 @@ export function ConcludeScreen({ visible, handleClose, tarefa, mensagem }: Concl
 
   // Estado inicial para edição do produto
   const [editingTarefa, setEditingTarefa] = useState<TTarefaAttr | null>(tarefa);
-  const [editedTitulo, setEditedTitulo] = useState(tarefa?.titulo || "");
-  const [editedDescricao, setEditedDescricao] = useState(tarefa?.descricao || "");
 
   // Sempre que o produto mudar, atualiza o estado de edição
   useEffect(() => {
     if (tarefa) {
       setEditingTarefa(tarefa);
-      setEditedTitulo(tarefa.titulo);
-      setEditedDescricao(tarefa.descricao);
     }
   }, [tarefa]);
 
@@ -39,13 +35,13 @@ export function ConcludeScreen({ visible, handleClose, tarefa, mensagem }: Concl
       const updatedTarefa = {
         ...editingTarefa,
         idTarefa: editingTarefa.idTarefa,
-        titulo: editedTitulo,
-        descricao: editedDescricao,
+        titulo: editingTarefa.titulo,
+        descricao: editingTarefa.descricao,
         status: Status.Concluido,
       };
 
       DZSQLiteUpdate(updatedTarefa.idTarefa, updatedTarefa); // Atualizando no banco de dados
-      dispatch({ type: TarefaActionTypes.ALTER_TAREFA, payload: updatedTarefa });
+      dispatch({ type: TarefaActionTypes.CONCLUDE_TAREFA, payload: updatedTarefa });
       setEditingTarefa(null);
       handleClose(); // Fechar o modal
     }

@@ -11,7 +11,7 @@ import DeleteScreen from '../delete';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { eq } from 'drizzle-orm';
 import { Status } from '@/src/model/status';
-import ConcludeScreen from '../concluir';
+import ConcludeScreen from '../conclude';
 
 type TarefaListProps = {
     tarefa: TTarefaAttr

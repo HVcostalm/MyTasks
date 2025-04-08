@@ -1,1 +1,0 @@
-export { ConcludeScreen as default } from "./concluirscreen";
