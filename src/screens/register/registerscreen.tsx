@@ -1,7 +1,7 @@
 import ModalScreen from "@/src/cp/ModalScreen";
 import { useEffect, useState } from "react";
-import { StyleSheet, TextInput, View, } from 'react-native';
-import { Tarefa, TTarefaAttr } from "@/src/model/tarefa";
+import { Alert, StyleSheet, TextInput, View, Text } from 'react-native';
+import { Tarefa } from "@/src/model/tarefa";
 import { Button } from "@/src/cp/Button";
 import { useContextTarefa, TarefaActionTypes } from "@/src/state/tarefa";
 import { DZSQLiteInsert } from "@/src/db/drizzlesqlite";
@@ -20,22 +20,33 @@ export function RegisterScreen({ visible, handleClose }: RegisterProps) {
   const [descricao, setDescricao] = useState("")
 
   const handleClick = async () => {
-  const newTarefa = new Tarefa(Status.Pendente, titulo, descricao);
 
-  // 👇 Pegamos só os campos necessários, excluindo o idTarefa
-  const { titulo: t, descricao: d, status: s } = newTarefa.data;
+    if (titulo.trim() === "") {
+      Alert.alert("Título obrigatório", "Por favor, informe um título para a tarefa.");
+      return;
+    }
+  
+    if (descricao.length > 100) {
+      Alert.alert("Descrição muito longa", "A descrição deve ter no máximo 100 caracteres.");
+      return;
+    }
 
-  const idGerado = await DZSQLiteInsert(tarefasTable, {
-    titulo: t,
-    descricao: d,
-    status: s,
-  });
+    const newTarefa = new Tarefa(Status.Pendente, titulo, descricao);
 
-  newTarefa.idTarefa = idGerado;
+    // 👇 Pegamos só os campos necessários, excluindo o idTarefa
+    const { titulo: t, descricao: d, status: s } = newTarefa.data;
 
-  dispatch({ type: TarefaActionTypes.ADD_TAREFA, payload: newTarefa.datacpy });
+    const idGerado = await DZSQLiteInsert(tarefasTable, {
+      titulo: t,
+      descricao: d,
+      status: s,
+    });
 
-  handleClose();
+    newTarefa.idTarefa = idGerado;
+
+    dispatch({ type: TarefaActionTypes.ADD_TAREFA, payload: newTarefa.datacpy });
+
+    handleClose();
 };
 
   
@@ -63,6 +74,9 @@ export function RegisterScreen({ visible, handleClose }: RegisterProps) {
           multiline
           style={[styles.input, styles.descricaoInput]}
         />
+        <Text style={[styles.charCounter, descricao.length > 100 && { color: 'red' }]}>
+          {descricao.length}/100
+        </Text>
         <View style={styles.footer}>
           <Button label="Criar" theme="primary" onPress={handleClick} />
         </View>
@@ -92,5 +106,10 @@ const styles = StyleSheet.create({
   },
   footer: {
     alignItems: 'center',
+  },
+  charCounter: {
+    alignSelf: 'flex-end',
+    marginRight: 20,
+    marginBottom: 12,
   },
 });

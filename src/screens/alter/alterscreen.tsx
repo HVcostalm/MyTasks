@@ -1,7 +1,6 @@
 import ModalScreen from "@/src/cp/ModalScreen";
-import { ThemedView } from "@/src/cp/ThemedView";
 import { useEffect, useState } from "react";
-import { StyleSheet, TextInput, View } from 'react-native';
+import { StyleSheet, TextInput, View, Text, Alert } from 'react-native';
 import { TTarefaAttr } from "@/src/model/tarefa";
 import { Button } from "@/src/cp/Button";
 import { useContextTarefa, TarefaActionTypes } from "@/src/state/tarefa";
@@ -40,6 +39,16 @@ export function AlterScreen({ visible, handleClose, tarefa }: AlterProps) {
         status: editingTarefa.status,
       };
 
+      if (editedTitulo.trim() === "") {
+        Alert.alert("Título obrigatório", "Por favor, informe um título para a tarefa.");
+        return;
+      }
+    
+      if (editedDescricao.length > 100) {
+        Alert.alert("Descrição muito longa", "A descrição deve ter no máximo 100 caracteres.");
+        return;
+      }
+
       DZSQLiteUpdate(updatedTarefa.idTarefa, updatedTarefa); // Atualizando no banco de dados
       dispatch({ type: TarefaActionTypes.ALTER_TAREFA, payload: updatedTarefa });
       setEditingTarefa(null);
@@ -63,6 +72,9 @@ export function AlterScreen({ visible, handleClose, tarefa }: AlterProps) {
             multiline
             style={[styles.input, styles.descricaoInput]}
           />
+          <Text style={[styles.charCounter, editedDescricao.length > 100 && { color: 'red' }]}>
+                    {editedDescricao.length}/100
+                  </Text>
           <View style={styles.footer}>
             <Button label="Salvar" theme="primary" onPress={handleClick} />
           </View>
@@ -92,5 +104,10 @@ const styles = StyleSheet.create({
   },
   footer: {
     alignItems: 'center',
+  },
+  charCounter: {
+    alignSelf: 'flex-end',
+    marginRight: 20,
+    marginBottom: 12,
   },
 });
