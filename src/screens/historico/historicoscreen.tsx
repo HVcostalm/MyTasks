@@ -5,7 +5,7 @@ import { tarefasTable } from '@/src/db/schema';
 import { TTarefaAttr } from '@/src/model/tarefa';
 import { useContextTarefa, TarefaActionTypes } from '@/src/state/tarefa';
 import { useEffect } from 'react';
-import { FlatList, View, StyleSheet } from 'react-native';
+import { FlatList, View, StyleSheet, useWindowDimensions } from 'react-native';
 import { eq } from 'drizzle-orm';
 import { Status } from '@/src/model/status';
 
@@ -15,6 +15,7 @@ type TarefaListProps = {
 
 export function HistoricoScreen() {
     const { state, dispatch } = useContextTarefa();
+    const {width} = useWindowDimensions();
     
     const handleEmpty = () => {
         return (
@@ -28,7 +29,7 @@ export function HistoricoScreen() {
 
     const ItemRenderer = ({ tarefa }: TarefaListProps) => {
         return (
-            <View style={styles.card}>
+            <View style={[styles.card, { width: width - 24 }]}>
                 <View style={styles.cardText}>
                     <ThemedText type="defaultSemiBold" style={styles.cardTitle}>
                         {tarefa.titulo}
@@ -117,7 +118,6 @@ const styles = StyleSheet.create({
         marginHorizontal: 12,
         alignItems: 'flex-start',
         justifyContent: 'space-between',
-        width: 350,
         height: 125,
     },
     

@@ -5,7 +5,7 @@ import { tarefasTable } from '@/src/db/schema';
 import { TTarefaAttr } from '@/src/model/tarefa';
 import { useContextTarefa, TarefaActionTypes } from '@/src/state/tarefa';
 import { useEffect, useState } from 'react';
-import { FlatList, View, StyleSheet, Pressable } from 'react-native';
+import { FlatList, View, StyleSheet, Pressable, useWindowDimensions } from 'react-native';
 import AlterScreen from '../alter';
 import DeleteScreen from '../delete';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -19,6 +19,8 @@ type TarefaListProps = {
 
 export function TarefaListScreen() {
     const { state, dispatch } = useContextTarefa();
+    const {width} = useWindowDimensions();
+
     const [isAlterModalVisible, setIsAlterModalVisible] = useState<boolean>(false);
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState<boolean>(false);
     const [isConcludeModalVisible, setIsConcludeModalVisible] = useState<boolean>(false);
@@ -65,7 +67,7 @@ export function TarefaListScreen() {
 
     const ItemRenderer = ({ tarefa }: TarefaListProps) => {
         return (
-            <View style={styles.card}>
+            <View style={[styles.card, { width: width - 24 }]}>
                 <View style={styles.cardText}>
                     <ThemedText type="defaultSemiBold" style={styles.cardTitle}>
                         {tarefa.titulo}
