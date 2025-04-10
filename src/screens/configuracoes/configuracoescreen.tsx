@@ -1,14 +1,11 @@
 import { ThemedText } from '@/src/cp/ThemedText';
 import { ThemedView } from '@/src/cp/ThemedView';
-import { useContextTarefa, TarefaActionTypes } from '@/src/state/tarefa';
 import { useState } from 'react';
-import { View, StyleSheet, Pressable } from 'react-native';
+import { StyleSheet, Pressable } from 'react-native';
 import DeleteScreen from '../delete';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 export function ConfiguracoesScreen() {
-    const { dispatch } = useContextTarefa();
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState<boolean>(false);
 
     const onDeleteModalClose = () => {

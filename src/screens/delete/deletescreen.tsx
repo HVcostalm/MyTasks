@@ -8,7 +8,7 @@ import { useContextTarefa, TarefaActionTypes } from "@/src/state/tarefa";
 import { DZSQLiteDelete, DZSQLiteDeleteAll } from "@/src/db/drizzlesqlite";
 import { ThemedText } from "@/src/cp/ThemedText";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { useNavigation } from "@react-navigation/native";
+import { useRouter } from "expo-router";
 
 type DeleteProps = {
   visible: boolean,
@@ -19,7 +19,7 @@ type DeleteProps = {
 
 export function DeleteScreen({ visible, handleClose, tarefa, mensagem }: DeleteProps) {
   const { dispatch } = useContextTarefa();
-  const navigation = useNavigation();
+  const router = useRouter();
   const [deletingTarefa, setDeletingTarefa] = useState<TTarefaAttr | null>(tarefa);
 
   useEffect(() => {
@@ -36,8 +36,8 @@ export function DeleteScreen({ visible, handleClose, tarefa, mensagem }: DeleteP
       Alert.alert("Sucesso", "Todas as tarefas foram apagadas!");
       dispatch({ type: TarefaActionTypes.DELETE_ALL_TAREFAS });
     }
+    router.push("/");
     handleClose();
-    //navigation.navigate("(home)");
   };
   
 

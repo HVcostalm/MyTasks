@@ -1,7 +1,7 @@
 import ModalScreen from "@/src/cp/ModalScreen";
 import { ThemedView } from "@/src/cp/ThemedView";
 import { useEffect, useState } from "react";
-import { StyleSheet, TextInput, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { TTarefaAttr } from "@/src/model/tarefa";
 import { Button } from "@/src/cp/Button";
 import { useContextTarefa, TarefaActionTypes } from "@/src/state/tarefa";
