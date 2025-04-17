@@ -1,7 +1,7 @@
 import ModalScreen from "@/src/cp/ModalScreen";
 import { ThemedView } from "@/src/cp/ThemedView";
 import { useEffect, useState } from "react";
-import { StyleSheet, View } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 import { TTarefaAttr } from "@/src/model/tarefa";
 import { Button } from "@/src/cp/Button";
 import { useContextTarefa, TarefaActionTypes } from "@/src/state/tarefa";
@@ -9,6 +9,7 @@ import { DZSQLiteUpdate } from "@/src/db/drizzlesqlite";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { ThemedText } from "@/src/cp/ThemedText";
 import { Status } from "@/src/model/status";
+import { tocarMusica } from "@/src/music/playMusic";
 
 type ConcludeProps = {
   visible: boolean,
@@ -30,7 +31,7 @@ export function ConcludeScreen({ visible, handleClose, tarefa, mensagem }: Concl
     }
   }, [tarefa]);
 
-  const handleClick = () => {
+  const handleClick = async () => {
     if (editingTarefa) {
       const updatedTarefa = {
         ...editingTarefa,
@@ -43,6 +44,8 @@ export function ConcludeScreen({ visible, handleClose, tarefa, mensagem }: Concl
       DZSQLiteUpdate(updatedTarefa.idTarefa, updatedTarefa); // Atualizando no banco de dados
       dispatch({ type: TarefaActionTypes.CONCLUDE_TAREFA, payload: updatedTarefa });
       setEditingTarefa(null);
+      await tocarMusica();
+      Alert.alert("Tarefa Concluída", "Respect +");
       handleClose(); // Fechar o modal
     }
   }

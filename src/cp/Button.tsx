@@ -1,13 +1,9 @@
 import { StyleSheet, View, Pressable, Text } from 'react-native';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-
-type IconSymbolName = React.ComponentProps<typeof FontAwesome>['name'];
 
 type Props = {
   label: string;
   theme?: 'primary';
   onPress?: () => void;
-  iconame?: IconSymbolName;
 };
 
 export function Button({ label, theme, onPress }: Props) {
