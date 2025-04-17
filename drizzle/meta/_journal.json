@@ -15,6 +15,13 @@
       "when": 1743974838252,
       "tag": "0001_red_blue_blade",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1744897130476,
+      "tag": "0002_deep_dakota_north",
+      "breakpoints": true
     }
   ]
 }

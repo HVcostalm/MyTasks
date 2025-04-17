@@ -7,6 +7,7 @@ import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import migrations from '@/drizzle/migrations';
 import TarefaProvider from '@/src/state/tarefa';
 import { DATABASE_NAME } from '@/src/db/schema';
+import { MusicaProvider } from '@/src/state/musica';
 
 export default function RootLayout() {
   const expoDb = openDatabaseSync(DATABASE_NAME);
@@ -34,9 +35,11 @@ export default function RootLayout() {
         options={{ enableChangeListener: true }}
         useSuspense>
         <TarefaProvider>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          </Stack>
+          <MusicaProvider>
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            </Stack>
+          </MusicaProvider>
         </TarefaProvider>
       </SQLiteProvider>
     </Suspense>

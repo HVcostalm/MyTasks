@@ -1,6 +1,6 @@
 import ModalScreen from "@/src/cp/ModalScreen";
 import { ThemedView } from "@/src/cp/ThemedView";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Alert, StyleSheet, View } from 'react-native';
 import { TTarefaAttr } from "@/src/model/tarefa";
 import { Button } from "@/src/cp/Button";
@@ -10,6 +10,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { ThemedText } from "@/src/cp/ThemedText";
 import { Status } from "@/src/model/status";
 import { tocarMusica } from "@/src/music/playMusic";
+import { MusicaContext } from "@/src/state/musica";
 
 type ConcludeProps = {
   visible: boolean,
@@ -20,56 +21,59 @@ type ConcludeProps = {
 
 export function ConcludeScreen({ visible, handleClose, tarefa, mensagem }: ConcludeProps) {
   const { dispatch } = useContextTarefa();
-
-  // Estado inicial para edição do produto
-  const [editingTarefa, setEditingTarefa] = useState<TTarefaAttr | null>(tarefa);
-
-  // Sempre que o produto mudar, atualiza o estado de edição
-  useEffect(() => {
-    if (tarefa) {
-      setEditingTarefa(tarefa);
-    }
-  }, [tarefa]);
+  const musicaCtx = useContext(MusicaContext);
 
   const handleClick = async () => {
-    if (editingTarefa) {
-      const updatedTarefa = {
-        ...editingTarefa,
-        idTarefa: editingTarefa.idTarefa,
-        titulo: editingTarefa.titulo,
-        descricao: editingTarefa.descricao,
-        status: Status.Concluido,
-      };
+    if (!tarefa) return;
 
-      DZSQLiteUpdate(updatedTarefa.idTarefa, updatedTarefa); // Atualizando no banco de dados
-      dispatch({ type: TarefaActionTypes.CONCLUDE_TAREFA, payload: updatedTarefa });
-      setEditingTarefa(null);
-      await tocarMusica();
-      Alert.alert("Tarefa Concluída", "Respect +");
-      handleClose(); // Fechar o modal
+    const updatedTarefa = {
+      ...tarefa,
+      status: Status.Concluido,
+    };
+
+    await DZSQLiteUpdate(updatedTarefa.idTarefa, updatedTarefa);
+    dispatch({ type: TarefaActionTypes.CONCLUDE_TAREFA, payload: updatedTarefa });
+
+    if (musicaCtx?.state.somAtivado) {
+      await tocarMusica(musicaCtx.state.somAtivado);
     }
-  }
+
+    Alert.alert("Tarefa Concluída", "Respect +");
+
+    // Fecha o modal com pequeno delay (opcional mas ajuda na UX)
+    setTimeout(() => {
+      handleClose();
+    }, 50);
+  };
 
   return (
     <ModalScreen isVisible={visible} onClose={handleClose} title="">
-    <ThemedView style={styles.modalContent}>
-      <FontAwesome name="warning" size={48} color="blue" style={styles.warningIcon} />
+      <ThemedView style={styles.modalContent}>
+        <FontAwesome name="warning" size={48} color="blue" style={styles.warningIcon} />
 
-      <ThemedText type="defaultCenter" style={styles.message}>
-        {mensagem
-          ? mensagem
-          : editingTarefa
-            ? `Tem certeza que concluiu a tarefa ${editingTarefa.titulo}?`
-            : "Nenhuma tarefa selecionada"}
-      </ThemedText>
+        {tarefa ? (
+          <ThemedText type="defaultCenter" style={styles.message}>
+            {mensagem
+              ? mensagem
+              : `Tem certeza que concluiu a tarefa ${tarefa.titulo}?`}
+          </ThemedText>
+        ) : (
+          <ThemedText type="defaultCenter" style={styles.message}>
+            Nenhuma tarefa selecionada
+          </ThemedText>
+        )}
 
-      <View style={styles.buttonRow}>
-        <Button label="Sim" theme="primary" onPress={handleClick} />
-        <Button label="Não" theme="primary" onPress={handleClose} />
-      </View>
-    </ThemedView>
-  </ModalScreen>
-    );
+        <View style={styles.buttonRow}>
+          <Button
+            label="Sim"
+            theme="primary"
+            onPress={handleClick}
+          />
+          <Button label="Não" theme="primary" onPress={handleClose} />
+        </View>
+      </ThemedView>
+    </ModalScreen>
+  );
 }
 
 const styles = StyleSheet.create({

@@ -1,6 +1,8 @@
 import { Audio } from "expo-av";
 
-export async function tocarMusica() {
+export async function tocarMusica(somAtivado: boolean) {
+  if (!somAtivado) return;
+
   const { sound } = await Audio.Sound.createAsync(
     require("./GtaSanAndreasSoundEffect.mp3")
   );
