@@ -46,7 +46,7 @@ async function DZSQLiteSelect<T extends {}>(
 }
 
 
-async function DZSQLiteUpdate<T extends { idTarefa: number }>(
+async function DZSQLiteUpdate(
     id: number, 
     newData: Partial<TTarefaAttr>, 
     dbname: string = DATABASE_NAME
